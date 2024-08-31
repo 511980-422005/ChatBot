@@ -1,0 +1,11 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore package-lock.json (if you don't want to track dependency versions)
+package-lock.json
+
+# Ignore README file if not needed in the repository (optional)
+readme
+
+# Ignore any other files you don't want to track
+*.log

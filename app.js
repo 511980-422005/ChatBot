@@ -1,6 +1,6 @@
-var url = "https://fe02-2401-4900-4df8-5c1c-e042-7b8a-1e2a-cbe2.ngrok-free.app/";
-var nameInput=''
-var msgs=[]
+ 
+var url = "http://localhost:3000";
+var nameInput=localStorage.getItem('name');
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -11,31 +11,29 @@ document.addEventListener('DOMContentLoaded', () => {
         <h2 id="entername">Enter Your Name</h2>
         <input type="text" id="nameInput" placeholder="Your name..." >
         <button id="nameSubmit">Submit</button>
-
 `
-    const click = document.getElementById('nameSubmit');
-    click.addEventListener('click', () => {
-          nameInput = document.getElementById('nameInput').value.trim();
-        if (nameInput) {
-            localStorage.setItem('name', nameInput);
-            
-chat();
-getcontent();
-        }
-    });
-    }else{
-        nameInput=localStorage.getItem('name');
-        
-chat(getcontent); 
-   }
+    document.getElementById('nameSubmit').addEventListener('click', () => {
 
+        nameInput = document.getElementById('nameInput').value.trim();
+
+        if (nameInput){
+            localStorage.setItem('name', nameInput);
+             
+            getcontent();
+        }});
+    }
+    else{
+        nameInput=localStorage.getItem('name');
+       
+   }
+ chat( );   getcontent();
 });
 
-function chat(getcontents) {
+function chat( ) {
      document.body.innerHTML = `
     <div class="container">
         <header class="header">
-            <h1>ChatBot</h1> 
+            <h1>Chat i</h1> 
         </header>
         <div class="chat-box" id="container">
             <ul id="messageList">
@@ -49,76 +47,73 @@ function chat(getcontents) {
     </div>`;
 
     const inputbox = document.getElementById('input');
-    const sendButton = document.getElementById('sendButton');
-    const messageList = document.getElementById('messageList');
+    const sendButton = document.getElementById('sendButton'); 
+    nameInput=localStorage.getItem('name');
 
-    sendButton.addEventListener('click', (
-        getcontent) => {
+    sendButton.addEventListener('click', () => {
         const message = inputbox.value.trim();
         if (message) {
+
+//admin side
+
 var code = message.split(" ");
-if(code[0]=="511980"){
-    localStorage.setItem('name', code[1]);
-}else{
-
-    let date = formatDate();
-
-        let data = {
-            name:`${nameInput}`,
-            msg:`${message}`,
-            date:`${date}`
-        }
-        axios.post(`${url}`, data)
-.then(response => {
-    console.log('Data sent successfully ', response.data);
-    
+if(code[0]=="511980-name" ){
+    const result = code.slice(1).join(' ');
+    localStorage.setItem('name', result);
+    nameInput=result;
+}
+else if(code[0]=="511980-clear" ){
+    clearchat();
+}
+else{
+    let date = formatDate();//today date kudukara function
+    let data = {
+                name:`${nameInput}`,
+                msg:`${message}`,
+                date:`${date}`
+                }
+//sending new message to server
+axios.post(`${url}`, data).then(response => { 
     getcontent();
-}); 
-    inputbox.value = '';  }
-
-        }
-    });
-    getcontents();
+});  
 }
 
-
+inputbox.value = ''; 
+        }
+    });
+}
 
 
 
 
 
 function getcontent() {
-    axios.get(url)
-        .then(response => {
-            const data = response.data;
+    try {
+        axios.get(url).then((response) => {
+            const msgs = response.data; 
 
-            if (typeof data === 'string') {
-                const lines = data.trim().split('\n');
-                const msgs = lines.map(line => {
-                    try {
-                        return JSON.parse(line);
-                    } catch (e) {
-                        return null;
-                    }
-                }).filter(item => item !== null);
-
-                msgs.forEach(msg => add(msg.name, msg.msg,msg.date));
-            } else {
-                console.error('Unexpected data type');
-            }
-        })
-        .catch(error => {
+            // `msgs` is an array of JSON objects
+            msgs.forEach(msg => add(msg.name, msg.msg, msg.date));
+        }).catch((error) => {
             console.error('Error fetching data:', error);
         });
+    } catch (error) {
+        console.error('Error in getcontent:', error);
+    }
 }
 
 
-function add(name,messagein,day){   
+function add(name,messagein,day){  try {
+    var messageList = document.getElementById('messageList')
     const li = document.createElement('li');
     var chr = name[name.length-1];
     var color=colorFromChar(chr);
     li.innerHTML = `<p id="name1" style="color:${color};">${name}:</p> ${messagein} <p id="day">${day}</p>`;
  messageList.appendChild(li); 
+
+ messageList.scrollTop = messageList.scrollHeight;}catch(err){
+     
+ }
 }
 
 
@@ -155,4 +150,14 @@ if(char=='a'){
     return 'skyblue';
 }
     return `rgb(${r}, ${g}, ${b})`;
+}
+
+function clearchat() {
+    axios.get(`${url}/clear`)
+        .then(response => {
+            console.log(response.data); // Log the server response
+              })
+        .catch(error => {
+            console.error('Error clearing chat:', error); // Handle any errors
+        });
 }
