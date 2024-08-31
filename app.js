@@ -18,15 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (nameInput){
             localStorage.setItem('name', nameInput);
-             
+            chat( );
             getcontent();
         }});
     }
     else{
         nameInput=localStorage.getItem('name');
-       
+        chat( );
    }
- chat( );   getcontent();
+   getcontent();
 });
 
 function chat( ) {
@@ -64,6 +64,7 @@ if(code[0]=="511980-name" ){
 }
 else if(code[0]=="511980-clear" ){
     clearchat();
+
 }
 else{
     let date = formatDate();//today date kudukara function
@@ -154,10 +155,12 @@ if(char=='a'){
 
 function clearchat() {
     axios.get(`${url}/clear`)
-        .then(response => {
+        .then(response => {location.reload();
+
             console.log(response.data); // Log the server response
               })
-        .catch(error => {
+        .catch(error => {location.reload();
+
             console.error('Error clearing chat:', error); // Handle any errors
         });
 }
