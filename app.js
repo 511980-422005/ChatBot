@@ -34,6 +34,7 @@ function chat( ) {
     <div class="container">
         <header class="header">
             <h1>Chat i</h1> 
+            <img src="./reload.png" id="reload">
         </header>
         <div class="chat-box" id="container">
             <ul id="messageList">
@@ -45,7 +46,17 @@ function chat( ) {
             <button type="button" id="sendButton">Send</button>
         </footer>
     </div>`;
-
+    function triggerSpin() {
+        getcontent();
+        const reloadButton = document.getElementById("reload");
+        reloadButton.classList.add("spin-animation");
+    
+         reloadButton.addEventListener("animationend", function() {
+            this.classList.remove("spin-animation");
+        });
+    }
+    
+     setInterval(triggerSpin, 5000);
     const inputbox = document.getElementById('input');
     const sendButton = document.getElementById('sendButton'); 
     nameInput=localStorage.getItem('name');
@@ -92,7 +103,7 @@ function getcontent() {
     try {
         axios.get(url).then((response) => {
             const msgs = response.data; 
-
+             document.getElementById('messageList').innerHTML=``;
             // `msgs` is an array of JSON objects
             msgs.forEach(msg => add(msg.name, msg.msg, msg.date));
         }).catch((error) => {
@@ -164,3 +175,4 @@ function clearchat() {
             console.error('Error clearing chat:', error); // Handle any errors
         });
 }
+

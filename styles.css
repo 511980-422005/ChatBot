@@ -22,6 +22,7 @@ body {
 }
 
 .header {
+    position: relative;
     background-color: #3b3a3a;
     color: #fff;
     padding: 15px;
@@ -172,4 +173,21 @@ text-align: right;
 
 #nameSubmit:hover {
     background-color: #0056b3; /* Darker blue on hover */
+}
+#reload{
+    top: 5px;
+    right: 10px;
+    display: flex;
+    align-items: flex-end;
+    width: 50px;
+    position:absolute;
+
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spin-animation {
+    animation: spin 1s linear;
 }
