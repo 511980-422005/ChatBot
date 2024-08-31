@@ -1,5 +1,5 @@
  
-var url = "http://localhost:3000";
+var url = "https://server-wg9a.onrender.com";
 var nameInput=localStorage.getItem('name');
 
 document.addEventListener('DOMContentLoaded', () => {
