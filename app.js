@@ -20,13 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('name', nameInput);
             chat( );
             getcontent();
+            
+   online(nameInput);
         }});
     }
     else{
         nameInput=localStorage.getItem('name');
         chat( );
+        
+   online(nameInput);
    }
    getcontent();
+   
 });
 
 function chat( ) {
@@ -104,7 +109,7 @@ function getcontent() {
         axios.get(url).then((response) => {
             const msgs = response.data; 
              document.getElementById('messageList').innerHTML=``;
-            // `msgs` is an array of JSON objects
+          
             msgs.forEach(msg => add(msg.name, msg.msg, msg.date));
         }).catch((error) => {
             console.error('Error fetching data:', error);
@@ -166,13 +171,26 @@ if(char=='a'){
 
 function clearchat() {
     axios.get(`${url}/clear`)
-        .then(response => {location.reload();
-
-            console.log(response.data); // Log the server response
+        .then(response => {
+            location.reload();
+            console.log(response.data);  
               })
         .catch(error => {location.reload();
 
-            console.error('Error clearing chat:', error); // Handle any errors
+            console.error('Error clearing chat:', error);  
         });
 }
 
+function online(nameInput1){
+    
+    let date = formatDate();//today date kudukara function
+    let data = {
+                name:`${nameInput1}`,
+                msg:`Online...`,
+                date:`${date}`
+                }
+//sending new message to server
+axios.post(`${url}`, data).then(response => { 
+   
+});  
+}
